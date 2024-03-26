@@ -4,32 +4,35 @@ import { useNavigate } from 'react-router-dom';
 const RegisterBankAccount = () => {
     const [accountId, setAccountId] = useState('');
     const [pin, setPin] = useState('');
-    const [userId, setUserId] = useState(''); // Define userId state
+    const [userId, setUserId] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    // Fetch the userId from local storage when the component mounts
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
-            setUserId(storedUserId); // Set the userId state with the value from local storage
+            setUserId(storedUserId);
         }
     }, []);
 
     const handleRegistration = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/accounts/login', {
+            const response = await fetch('http://localhost:8084/account/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ accountId, pin, userId }) // Pass userId in the request body
+                body: JSON.stringify({ accountId, transactionPin: pin })
             });
-            console.log(accountId,pin,userId)
+    
             if (response.ok) {
-                localStorage.setItem('accountId', accountId);
-                // Redirect to dashboard after successful registration
-                navigate('/dashboard-user');
+                const data = await response.json();
+                if (data.customerId === userId) {
+                    localStorage.setItem('accountId', accountId);
+                    navigate('/dashboard-user');
+                } else {
+                    setErrorMessage('Invalid customer ID.');
+                }
             } else {
                 setErrorMessage('Invalid credentials. Please try again.');
             }

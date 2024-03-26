@@ -11,20 +11,21 @@ const LoginPage = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/users/login', {
+            const response = await fetch('http://localhost:8084/customer/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId, password })
+                body: JSON.stringify({
+                    customerId: userId,
+                    password: password
+                })
             });
-            console.log(response.ok);
-            if (response.ok==true) {
-                
-
+    
+            if (response.ok) {
                 // Save user ID in local storage
                 localStorage.setItem('userId', userId);
-
+    
                 // Redirect to appropriate dashboard
                 navigate('/dashboard-user');
             } else {
@@ -35,6 +36,7 @@ const LoginPage = () => {
             setLoginError('Login failed. Please try again later.');
         }
     };
+    
 
     return (
         <>
