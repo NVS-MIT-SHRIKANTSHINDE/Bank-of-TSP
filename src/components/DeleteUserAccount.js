@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const DeleteUserAccount = () => {
     const [accountNumber, setAccountNumber] = useState('');
@@ -6,13 +7,21 @@ const DeleteUserAccount = () => {
 
     const handleDeleteAccount = () => {
         // Perform account deletion logic here
+       
         if (!accountNumber) {
             setErrorMessage('Please enter an account number.');
             return;
         }
-        // Assume account deletion logic here
-        console.log('Deleting account:', accountNumber);
-        setAccountNumber('');
+
+        axios.delete(`http://localhost:8083/account/${accountNumber}`)
+            .then(response => {
+                console.log('Account deleted successfully:', response.data);
+                setAccountNumber('');
+            })
+            .catch(error => {
+                console.error('Error deleting account:', error);
+                setErrorMessage('Error deleting account. Please try again later.');
+            });
     };
 
     return (

@@ -10,23 +10,68 @@ const SignupPage = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatchError, setPasswordMatchError] = useState('');
+    const [signupError, setSignupError] = useState('');
+    const [customerInfo, setCustomerInfo] = useState(null);
+    const [verificationCode, setVerificationCode] = useState('');
+    const [isVerificationSent, setIsVerificationSent] = useState(false);
 
-    const handleSignup = () => {
-        if (password !== confirmPassword) {
-            setPasswordMatchError("Passwords don't match");
-            return;
+    const handleSignup = async () => {
+        try {
+            if (password !== confirmPassword) {
+                setPasswordMatchError("Passwords don't match");
+                return;
+            }
+
+            const userData = {
+                name: `${firstName} ${lastName}`,
+                email: email,
+                password: password
+            };
+
+            const response = await fetch('http://localhost:8084/customer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            // Display customer information after successful signup
+            setCustomerInfo(data);
+            console.log(data);
+
+            // Set verification code to '1234' for now
+            setVerificationCode('1234');
+        } catch (error) {
+            console.error('Error signing up:', error);
+            setSignupError('Error signing up. Please try again later.');
         }
-        // Handle signup logic here
-        console.log('Signing up...', firstName, lastName, email, password);
+    };
+
+    const handleVerification = () => {
+        // Implement verification code validation here
+        // For simplicity, assume the verification code is correct
+        // and proceed with signup
+        console.log("done");
+        setIsVerificationSent(true);
+    };
+
+    const handleResendVerification = () => {
+        // Implement resend verification logic here
+        setIsVerificationSent(true);
+        setVerificationCode(''); // Clear previous code if any
+        // Call API to resend verification email
     };
 
     return (
         <>
             <div className="hero" id='hero'>
-                <div>
-                    <NavBar />
-                </div>
-                
+                <NavBar />
                 <div className="m-auto overflow-hidden mx-4 mt-8 lg:mt-4 p-2 md:p-12 h-5/6" data-aos="zoom-in">
 
                     <div id='hero' className="flex flex-col lg:flex-row py-8 justify-between text-center lg:text-left">
@@ -61,6 +106,25 @@ const SignupPage = () => {
                                     className="bg-gray-100 border border-gray-300 rounded-md p-2 w-full"
                                 />
                             </div>
+                            {!isVerificationSent ? (
+                                <button onClick={handleResendVerification} className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800">
+                                    Resend Verification
+                                </button>
+                            ) : (
+                                <div className="mt-5">
+                                    <p>An email with a verification code has been sent to {email}. Please check your email and enter the verification code below:</p>
+                                    <input
+                                        type="text"
+                                        placeholder="Verification Code"
+                                        value={verificationCode}
+                                        onChange={(e) => setVerificationCode(e.target.value)}
+                                        className="bg-gray-100 border border-gray-300 rounded-md p-2 w-full mt-2"
+                                    />
+                                    <button onClick={handleVerification} className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 mt-3">
+                                        Validate Verification Code
+                                    </button>
+                                </div>
+                            )}
                             <div className="mb-5">
                                 <input
                                     type="password"
@@ -86,6 +150,17 @@ const SignupPage = () => {
                             <button onClick={handleSignup} className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800">
                                 Sign Up
                             </button>
+                            {signupError && <p className="text-red-500 text-sm mt-3">{signupError}</p>}
+                            {customerInfo && (
+                                <div className="mt-5">
+                                    <h2 className="text-xl font-bold mb-2">Your Information:</h2>
+                                    <p><strong>Name:</strong> {customerInfo.name}</p>
+                                    <p><strong>Email:</strong> {customerInfo.email}</p>
+                                    <p><strong>User ID:</strong> {customerInfo.customerId}</p>
+                                    {/* Display other customer information as needed */}
+                                </div>
+                            )}
+                            
                             <div className="mt-3 text-gray-500">
                                 Already have an account? <Link to="/login" className="text-blue-900">Log in here</Link>
                             </div>
