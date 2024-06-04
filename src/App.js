@@ -10,7 +10,7 @@ import {
 // All pages
 import Home from './pages/Home';
 import Contact from './pages/Contact';
-import DemoProduct from './pages/DemoProduct';
+
 import SignupPage from './pages/SignupPage';
 import {useDocTitle} from './components/CustomHook';
 import ScrollToTop from './components/ScrollToTop';
@@ -27,6 +27,8 @@ import DeleteUserAccount from './components/DeleteUserAccount';
 import SearchUserAccount from './components/SearchUserAccount';
 import EditUserAccount from './components/EditUserAccount';
 import DisplayUserDetails from './pages/DisplayUserDetails';
+import TransferDetails from './components/TransferDetails';
+
 function App() {
   useEffect(() => {
     const aos_init = () => {
@@ -60,12 +62,13 @@ function App() {
             <Route path="/transfer-money" element={<TransferMoney />} />
             <Route path="/transaction-history" element={<TransactionHistory />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/get-demo" element={<DemoProduct />} /> 
+            <Route path="/transfer-details" element={<TransferDetails />} />
             <Route path="/add-user-account" element={<AddUserAccount></AddUserAccount>} />
             <Route path="/delete-user-account" element={<DeleteUserAccount></DeleteUserAccount>} />
                 <Route path="/search-user-account" element={<SearchUserAccount></SearchUserAccount>} />
                 <Route path="/edit-user-account" element={<EditUserAccount></EditUserAccount>} />
                 <Route path="/dashboard-user-details" element={<DisplayUserDetails></DisplayUserDetails>} />
+                
           </Routes>
         </ScrollToTop>
       </Router>

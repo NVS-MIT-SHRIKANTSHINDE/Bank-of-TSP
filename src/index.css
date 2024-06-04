@@ -24,3 +24,16 @@ body {
 }
 
 
+.divider:after,
+.divider:before {
+content: "";
+flex: 1;
+height: 1px;
+background: #eee;
+}
+.blue-box {
+  background-color: #007bff; /* Blue background color */
+  padding: 20px;
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+}

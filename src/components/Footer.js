@@ -23,6 +23,7 @@ const Footer = () => {
                             </div>
                         </div>
                     </div>
+                    
 
                     {/* 2nd block */}
                     <div className="col-span-6 md:col-span-6 lg:col-span-1 ml-7 mx-auto">

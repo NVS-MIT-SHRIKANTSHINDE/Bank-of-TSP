@@ -58,22 +58,30 @@ const SearchUserAccount = () => {
 
     return (
         <div className="mt-8 max-w-full mx-auto bg-white shadow-md rounded-md p-8">
-            <h2 className="text-xl font-semibold mb-6">Search User Account</h2>
-            <div className="mb-4">
-                <label className="block mb-1 text-gray-600">Search Term</label>
-                <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="bg-gray-100 border border-gray-300 rounded-md p-2 w-full"
-                />
+            <div className="flex flex-col items-center justify-center">
+        <h2 className="text-xl font-bold mb-8">Search User Account</h2>
+        <div className="mb-6 w-9/12 md:w-5/6 lg:w-1/4 xl:w-1/4">
+        <div className="flex flex-col items-center justify-center">
+            <label className="text-xl block mb-2 text-gray-600">Search Term</label>
             </div>
-            <button onClick={handleSearch} className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 w-full mb-4">
-                Search
-            </button>
-            <button onClick={handleFetchAllUsers} className="bg-green-900 text-white px-6 py-3 rounded-md hover:bg-green-800 w-full mb-4">
-                Fetch All Users
-            </button>
+            <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="bg-gray-100 border border-gray-300 rounded-md p-2 w-full"
+            />
+        </div>
+                
+            </div>
+            <div className="flex justify-center">
+    <button onClick={handleSearch} className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 mr-4">
+        Search
+    </button>
+    <button onClick={handleFetchAllUsers} className="bg-green-900 text-white px-6 py-3 rounded-md hover:bg-green-800">
+        Fetch All Users
+    </button>
+</div>
+
             {searchResult.length > 0 && (
                 <div className="mt-4">
                     <h3 className="text-lg font-semibold mb-2">Search Result:</h3>
@@ -85,7 +93,7 @@ const SearchUserAccount = () => {
                                 <th className="px-4 py-2">Email</th>
                                 <th className="px-4 py-2">Phone</th>
                                 <th className="px-4 py-2">Address</th>
-                                <th className="px-4 py-2">Actions</th> {/* Add Actions column */}
+                                <th className="px-4 py-2">Actions</th>
                             </tr>
                         </thead>
                         <tbody>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import NavBar from '../components/Navbar/NavBar';
 import heroImg from '../images/web-dev.svg';
+import TransferMoney from '../components/TransferMoney'; // Import TransferMoney component
 
 const LoginPage = () => {
     const [userId, setUserId] = useState('');
@@ -10,8 +11,13 @@ const LoginPage = () => {
     const navigate = useNavigate();
 
     const handleLogin = async () => {
+        if (!userId || !password) {
+            setLoginError('Please fill in all fields.');
+            return;
+        }
+
         try {
-            const response = await fetch('http://localhost:8084/customer/login', {
+            const response = await fetch('http://localhost:8084/customer/login/password', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -21,13 +27,17 @@ const LoginPage = () => {
                     password: password
                 })
             });
-    
+
             if (response.ok) {
-                // Save user ID in local storage
-                localStorage.setItem('userId', userId);
-    
-                // Redirect to appropriate dashboard
-                navigate('/dashboard-user');
+                const data = await response.json();
+                if (data) {
+                    // Save user ID in local storage
+                    localStorage.setItem('userId', userId);
+                    // Redirect to appropriate dashboard
+                    navigate('/dashboard-user');
+                } else {
+                    setLoginError('Invalid credentials. Please try again.');
+                }
             } else {
                 setLoginError('Invalid credentials. Please try again.');
             }
@@ -36,7 +46,6 @@ const LoginPage = () => {
             setLoginError('Login failed. Please try again later.');
         }
     };
-    
 
     return (
         <>
@@ -44,48 +53,46 @@ const LoginPage = () => {
                 <div>
                     <NavBar />
                 </div>
-                
-                <div className="m-auto overflow-hidden mx-4 mt-8 lg:mt-4 p-2 md:p-12 h-5/6" data-aos="zoom-in">
 
-                    <div id='hero' className="flex flex-col lg:flex-row py-8 justify-between text-center lg:text-left">
-                        <div className="lg:w-1/2 flex flex-col justify-center" data-aos="zoom-in" data-aos-delay="200">
-                            <h1 className="mb-5 md:text-5xl text-3xl font-bold text-blue-900">
-                                Login to Your Account
-                            </h1>
-                            <div className="mb-5">
+                <div className="flex items-center justify-center h-screen bg-gray-100">
+                    <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+                        <div className="text-center">
+                            <img src={heroImg} alt="card img" className="mx-auto w-32" />
+                            <h1 className="mt-4 text-2xl font-semibold text-gray-800">Login to Your Account</h1>
+                        </div>
+                        <form className="mt-8" onSubmit={(e) => e.preventDefault()}>
+                            <div>
                                 <input
                                     type="text"
                                     placeholder="User ID"
                                     value={userId}
                                     onChange={(e) => setUserId(e.target.value)}
-                                    className="bg-gray-100 border border-gray-300 rounded-md p-2 w-full"
+                                    className="w-full px-3 py-2 mt-4 bg-gray-100 border border-gray-300 rounded-md"
                                 />
                             </div>
-                            <div className="mb-5">
+                            <div>
                                 <input
                                     type="password"
                                     placeholder="Password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
-                                    className="bg-gray-100 border border-gray-300 rounded-md p-2 w-full"
+                                    className="w-full px-3 py-2 mt-4 bg-gray-100 border border-gray-300 rounded-md"
                                 />
                             </div>
-                            <button onClick={handleLogin} className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800">
+                            <button onClick={handleLogin} className="w-full px-3 py-2 mt-4 text-white bg-blue-900 rounded-md hover:bg-blue-800">
                                 Login
                             </button>
-                            {loginError && <p className="text-red-500 text-sm mt-1">{loginError}</p>}
-                            <div className="mt-3 text-gray-500">
+                            {loginError && <p className="mt-2 text-sm text-red-500">{loginError}</p>}
+                            <div className="mt-4 text-gray-500 text-center">
                                 Don't have an account? <Link to="/signup" className="text-blue-900">Sign up here</Link>
                             </div>
-                        </div>
-                        <div className="flex lg:justify-end w-full lg:w-1/2" data-aos="fade-up" data-aos-delay="700">
-                            <img alt="card img" className="rounded-t float-right duration-1000 w-full" src={heroImg} />
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
+            {userId && <TransferMoney loggedInUserId={userId} />} {/* Pass loggedInUserId to TransferMoney component */}
         </>
-    )
+    );
 }
 
 export default LoginPage;
